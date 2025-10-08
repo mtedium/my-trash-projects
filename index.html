@@ -164,34 +164,39 @@
             animate();
 
             // 9 拉伸 / 颜色 交互 
-            const lenIn = document.getElementById('len');   // x
-            const widIn = document.getElementById('wid');   // z
-            const heiIn = document.getElementById('hei');   // y
-            const colIn = document.getElementById('col');   //color
+            const len = document.getElementById('len');
+            const wid = document.getElementById('wid');
+            const hei = document.getElementById('hei');
+            const col = document.getElementById('col');
 
-            function updateTop() {
-                if (!tableTop) return;
-                const L = parseFloat(lenIn.value);
-                const W = parseFloat(widIn.value);
-                const H = parseFloat(heiIn.value);
-                tableTop.scale.set(L, W, H);          // 三轴分别控制
-                const C = new THREE.Color(colIn.value);
-                tableTop.traverse(child => {
-                    if (child.isMesh) child.material.color.copy(C);
-                });
-            }
-            function stretchLegs() {
-                if (!tableLegs) return;
-                const L = parseFloat(lenIn.value);
-                const W = parseFloat(widIn.value);
-                const H = parseFloat(heiIn.value);
-                tableLegs.scale.set(L, W, H);
-            }
+            function apply() {
+                const L = +len.value, W = +wid.value, H = +hei.value;
+                const C = new THREE.Color(col.value);
 
-            [lenIn, widIn, heiIn, colIn].forEach(el => el.addEventListener('input', () => {
-                updateTop();
-                stretchLegs();
-            }));
+                /* 桌面 */
+                if (tableTop) {
+                    tableTop.scale.set(L, W, H);
+                    tableTop.traverse(ch => {
+                        if (ch.isMesh) {
+                            if (!ch.material) ch.material = new THREE.MeshStandardMaterial();
+                            ch.material.color.copy(C);
+                        }
+                    });
+                }
+                /* 桌腿拉伸 + 改色 */
+                if (tableLegs) {
+                    tableLegs.scale.set(L, W, H);
+                    tableLegs.traverse(child => {
+                        if (child.isMesh) {
+                            if (!child.material) {
+                                child.material = new THREE.MeshStandardMaterial();
+                            }
+                            child.material.color.copy(C);
+                        }
+                    });
+                }
+            }
+            [len, wid, hei, col].forEach(el => el.addEventListener('input', apply));
         </script>
 
     </div>
