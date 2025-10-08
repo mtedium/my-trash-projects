@@ -177,20 +177,20 @@
                 if (tableTop) {
                     tableTop.scale.set(L, W, H);
                     tableTop.traverse(ch => {
-                        if (ch.isMesh) {
-                            if (!ch.material) ch.material = new THREE.MeshStandardMaterial();
-                            ch.material.color.copy(C);
-                        }
+                        // if (ch.isMesh) {
+                        //     if (!ch.material) ch.material = new THREE.MeshStandardMaterial();
+                        // }
+                        ch.material.color.copy(C);
                     });
                 }
-                /* 桌腿拉伸 + 改色 */
+                /* 桌腿 */
                 if (tableLegs) {
                     tableLegs.scale.set(L, W, H);
                     tableLegs.traverse(child => {
                         if (child.isMesh) {
-                            if (!child.material) {
-                                child.material = new THREE.MeshStandardMaterial();
-                            }
+                            // if (!child.material) {
+                            //     child.material = new THREE.MeshStandardMaterial();
+                            // }
                             child.material.color.copy(C);
                         }
                     });
