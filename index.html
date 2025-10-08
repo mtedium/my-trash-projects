@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>3D产品配置器</title>
+
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background: #f2f2f2;
+        }
+
+        #canvas-box {
+            width: 500px;
+            height: 400px;
+            border: 1px solid #999;
+        }
+
+        #ui {
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Three.js 小窗口 -->
+    <div id="canvas-box"></div>
+
+    <!-- 其余组件 -->
+    <div id="ui">
+        <h2>模型控制台</h2>
+        <button>QAQ</button>
+        <p>这里随便放文字、按钮、图片……</p>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+  </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 1 场景
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+
+        // 2 相机
+        const camera = new THREE.PerspectiveCamera(60, 500 / 400, 0.1, 1000);
+        camera.position.set(2, 1.5, -2);
+        camera.lookAt(0, 0, 0);
+
+        // 3 渲染器 大小按盒子写，挂到盒子而不是body
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(500, 400);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('canvas-box').appendChild(renderer.domElement); // ← 关键
+
+        // 4 控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 0, 0);
+        controls.update();
+
+        // 5 灯光
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(5, 10, 7);
+        dirLight.castShadow = true;
+        dirLight.shadow.camera.left = -10;
+        dirLight.shadow.camera.right = 10;
+        dirLight.shadow.camera.top = 10;
+        dirLight.shadow.camera.bottom = -10;
+        dirLight.shadow.camera.near = 0.1;
+        dirLight.shadow.camera.far = 50;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        scene.add(dirLight);
+        scene.add(new THREE.AmbientLight(0xffffff, 1.2));
+
+        // 6 地面
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(20, 20),
+            new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5, metalness: 0 })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // 7 加载obj
+        // 第一个模型
+        new OBJLoader()
+            .load('/img/tableTop.obj',
+                obj => {
+                    obj.rotation.x = -Math.PI / 2;
+                    obj.position.set(0, 0, 0);
+                    obj.traverse(child => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+                    scene.add(obj);
+                    const box = new THREE.Box3().setFromObject(obj);
+                    const cnt = box.getCenter(new THREE.Vector3());
+                    controls.target.copy(cnt);
+                    controls.update();
+                },
+                undefined,
+                err => console.error(err)
+            );
+
+        // 第二个模型
+        new OBJLoader()
+            .load('/img/tablelegs.obj',  // 第二个文件
+                obj2 => {
+                    obj2.rotation.x = -Math.PI / 2;
+                    obj2.position.set(0, 0, 0);
+                    obj2.scale.set(1, 1, 1);
+                    obj2.traverse(child => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+                    scene.add(obj2);
+                },
+                undefined,
+                err => console.error('第二个模型没加载出来', err)
+            );
+
+
+        // 8 渲染循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+
+</html>
