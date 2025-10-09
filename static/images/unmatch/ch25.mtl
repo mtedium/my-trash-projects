@@ -1,0 +1,73 @@
+# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
+# File Created: 30.06.2009 16:18:22
+
+newmtl ch25_wicker__cray_
+	Ns 14.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0450 0.0450 0.0450
+	Ke 0.1470 0.1470 0.1470
+	map_Ka O:\library\library\carlhansen\bitmaps\ch25_wicker_DIFFUSE.png
+	map_Kd O:\library\library\carlhansen\bitmaps\ch25_wicker_DIFFUSE.png
+
+newmtl ch25_wicker_back
+	Ns 14.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0450 0.0450 0.0450
+	Ke 0.1470 0.1470 0.1470
+	map_Ka O:\library\library\carlhansen\bitmaps\ch25_wicker_back_DIFFUSE.png
+	map_Kd O:\library\library\carlhansen\bitmaps\ch25_wicker_back_DIFFUSE.png
+
+newmtl ch25_oak__tnt_
+	Ns 11.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.1890 0.1890 0.1890
+	Ke 0.0000 0.0000 0.0000
+	map_Ka O:\library\library\carlhansen\bitmaps\Oak_knotless_white_cutout.png
+	map_Kd O:\library\library\carlhansen\bitmaps\Oak_knotless_white_cutout.png
+
+newmtl ch25_wicker__cray___tnt_
+	Ns 14.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0450 0.0450 0.0450
+	Ke 0.1470 0.1470 0.1470
+	map_Ka O:\library\library\carlhansen\bitmaps\ch25_wicker_DIFFUSE.png
+	map_Kd O:\library\library\carlhansen\bitmaps\ch25_wicker_DIFFUSE.png
+
+newmtl Brushed_Steel_Max
+	Ns 39.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.8730 0.8730 0.8730
+	Ke 0.0000 0.0000 0.0000
+	map_Ka O:\library\library\carlhansen\bitmaps\brushedsteel_tnt.png
+	map_Kd O:\library\library\carlhansen\bitmaps\brushedsteel_tnt.png
+	map_refl Map__1882_Raytrace.tga
