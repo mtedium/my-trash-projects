@@ -1,0 +1,359 @@
+body {
+    margin: 0;
+    background: #f8f9fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.container-fluid {
+    padding: 0;
+}
+
+.main-wrapper {
+    display: flex;
+    min-height: auto;
+}
+
+/* 左侧3D预览区 */
+.canvas-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 20px;
+}
+
+/* 3D展示区 */
+#canvas-box {
+    width: 100%;
+    max-width: 600px;
+    height: 480px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 右侧配置面板 */
+.config-section {
+    width: 380px;
+    background: #ffffff;
+    padding: 25px;
+    border-left: 1px solid #dee2e6;
+    overflow-y: auto;
+}
+
+.config-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #212529;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.config-group {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.config-group:last-of-type {
+    border-bottom: none;
+}
+
+.config-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #212529;
+    margin-bottom: 10px;
+}
+
+/* 木材种类选择 */
+.wood-options {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.wood-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.wood-option:hover {
+    transform: scale(1.1);
+}
+
+.wood-option.active {
+    border-color: #8b2332;
+    box-shadow: 0 0 0 2px rgba(139, 35, 50, 0.2);
+}
+
+.wood-option-label {
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+/* 形状选择 */
+.shape-options {
+    display: flex;
+    gap: 10px;
+}
+
+.shape-option {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+}
+
+.shape-option:hover {
+    border-color: #8b2332;
+}
+
+.shape-option.active {
+    border-color: #8b2332;
+}
+
+.shape-option svg {
+    width: 42px;
+    height: 42px;
+}
+
+/* 桌腿选择 */
+.leg-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.leg-option {
+    width: 52px;
+    height: 65px;
+    border: 2px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    padding: 5px;
+}
+
+.leg-option:hover {
+    border-color: #8b2332;
+}
+
+.leg-option.active {
+    border-color: #8b2332;
+    background: #f8f9fa;
+}
+
+.leg-option svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* 滑块控制 */
+.slider-control {
+    margin-bottom: 12px;
+}
+
+.slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.slider-label span {
+    font-size: 12px;
+    color: #495057;
+}
+
+.slider-value {
+    background: #f8f9fa;
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-weight: 500;
+    color: #212529;
+    font-size: 12px;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 5px;
+    border-radius: 3px;
+    background: #e9ecef;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #8b2332;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #8b2332;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 产地 */
+.origin-info {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+/* 价格信息 */
+.price-info {
+    font-size: 20px;
+    font-weight: 600;
+    color: #212529;
+}
+
+/* 配置说明 */
+.config-note {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #6c757d;
+    margin: 12px 0;
+    padding: 0;
+}
+
+/* PDF按钮 - 全宽 */
+.btn-pdf-full {
+    width: 100%;
+    background: #8b2332;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 5px;
+}
+
+.btn-pdf-full:hover {
+    background: #6d1b28;
+}
+
+/* 下方内容区域 */
+.content-sections {
+    background: #ffffff;
+    padding: 80px 0;
+}
+
+.content-section {
+    max-width: 1200px;
+    margin: 0 auto 100px;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.content-section:last-child {
+    margin-bottom: 0;
+}
+
+.content-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.content-image {
+    flex: 1.3;
+    min-width: 0;
+}
+
+.content-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+.content-image-placeholder {
+    width: 100%;
+    height: 500px;
+    aspect-ratio: 3/2;
+    background: #e9ecef;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.content-text {
+    flex: 0.7;
+    min-width: 0;
+}
+
+.content-text h2 {
+    font-size: 28px;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+
+.content-text p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #6c757d;
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+    .content-section {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .content-section.reverse {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 992px) {
+    .main-wrapper {
+        flex-direction: column;
+    }
+
+    .config-section {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #dee2e6;
+    }
+}
