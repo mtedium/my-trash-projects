@@ -127,13 +127,18 @@ body {
     border-color: #8b2332;
 }
 
-.shape-option.active {
-    border-color: #8b2332;
+/* 桌面形状选中状态：实心 */
+.shape-option.active svg {
+    fill: #8b2332;         
+    stroke: #8b2332;
 }
 
+/* 桌面形状选项默认状态：空心 */
 .shape-option svg {
-    width: 42px;
-    height: 42px;
+    fill: none;
+    stroke: #333;
+    stroke-width: 2;
+    transition: .25s;
 }
 
 /* 桌腿选择 */

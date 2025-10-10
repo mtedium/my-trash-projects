@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../static/css/header.css">
     <link rel="stylesheet" href="../static/css/footer.css">
     <link rel="stylesheet" href="../static/css/diy.css">
-    <link rel="stylesheet" href="../static/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
 </head>
 
 <body>
@@ -137,85 +137,36 @@
                         scene.add(ground);
 
                         // 7 加载obj
-                        let tableTop = null, tableLegs = null;
+                        // 全局变量
+                        let currentTop = null, currentLegs = null;
+                        const topPath = '/static/images/models';
+                        const legPath = '/static/images/models';
 
-                        // 桌面
-                        const mtlLoader = new MTLLoader();
-                        mtlLoader.load(
-                            '/static/images/tableTop.mtl',
-                            (materials) => {
+                        // 统一的加载器
+                        function loadModel(objUrl, mtlUrl, onFinished) {
+                            const mtlLoader = new MTLLoader();
+                            mtlLoader.load(mtlUrl, (materials) => {
                                 materials.preload();
-
                                 new OBJLoader()
                                     .setMaterials(materials)
-                                    .load(
-                                        '/static/images/tableTop.obj',
-                                        (obj) => {
-                                            // obj.rotation.x = Math.PI / 2;
-                                            obj.position.set(0, 0, 0);
-                                            obj.traverse((child) => {
-                                                if (child.isMesh) {
-                                                    child.castShadow = true;
-                                                    child.receiveShadow = true;
-                                                }
-                                            });
-                                            scene.add(obj);
-                                            tableTop = obj;
-                                            if (tableTop && tableLegs) window.applyConfig();   // 第一次统一缩放
-
-                                            const cnt = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
-                                            controls.target.copy(cnt);
-                                            controls.update();
-                                        },
-                                        undefined,
-                                        (err) => console.error('桌面 OBJ 加载失败', err)
-                                    );
-                            },
-                            undefined,
-                            (err) => console.error('桌面 MTL 加载失败', err)
-                        );
-
-                        // 桌腿
-                        mtlLoader.load(
-                            '/static/images/tableLegs.mtl',
-                            (materials) => {
-                                materials.preload();
-
-                                new OBJLoader()
-                                    .setMaterials(materials)
-                                    .load(
-                                        '/static/images/tableLegs.obj',
-                                        (obj2) => {
-                                            // obj2.rotation.x = -Math.PI / 2;
-                                            obj2.position.set(0, 0, 0);
-                                            obj2.traverse((child) => {
-                                                if (child.isMesh) {
-                                                    child.castShadow = true;
-                                                    child.receiveShadow = true;
-                                                }
-                                            });
-                                            scene.add(obj2);
-                                            tableLegs = obj2;
-                                            if (tableTop && tableLegs) window.applyConfig();   // 第二次统一缩放
-
-                                            const cnt = new THREE.Box3().setFromObject(obj2).getCenter(new THREE.Vector3());
-                                            controls.target.copy(cnt);
-                                            controls.update();
-                                        },
-                                        undefined,
-                                        (err) => console.error('桌腿 OBJ 加载失败', err)
-                                    );
-                            },
-                            undefined,
-                            (err) => console.error('桌腿 MTL 加载失败', err)
-                        );
+                                    .load(objUrl, (obj) => {
+                                        obj.traverse((child) => {
+                                            if (child.isMesh) {
+                                                child.castShadow = true;
+                                                child.receiveShadow = true;
+                                            }
+                                        });
+                                        onFinished(obj);
+                                    });
+                            });
+                        };
 
                         // 8 渲染循环
                         function animate() {
                             requestAnimationFrame(animate);
                             controls.update();
                             renderer.render(scene, camera);
-                        }
+                        };
                         animate();
 
                         // 9 交互控制
@@ -230,38 +181,39 @@
                             const W = widCm / 120000;
                             const T = thCm / 5000;
 
-                            const woodType = document.querySelector('.wood-option.active')?.dataset.wood || 'oak';
-                            const shapeType = document.querySelector('.shape-option.active')?.dataset.shape || 'rect';
-                            const legType = document.querySelector('.leg-option.active')?.dataset.leg || 'type1';
+                            //应用数据
+                            if (currentTop) currentTop.scale.set(L, T, W);
+                            if (currentLegs) currentLegs.scale.set(L, T, W);
+                        };
 
-                            // 桌面 - 根据形状和木材切换模型
-                            if (tableTop) {
-                                tableTop.scale.set(L, T, W);
-                                const box = new THREE.Box3().setFromObject(tableTop);
-                                const size = box.getSize(new THREE.Vector3());
-                                console.log('桌面当前尺寸 (L×T×W):', size.x.toFixed(2), size.y.toFixed(2), size.z.toFixed(2));
-                                // TODO: 根据 shapeType 加载对应桌面模型
-                                // 例如: /static/images/tableTop_rect.obj, /static/images/tableTop_oval1.obj
+                        // 根据当前选项加载桌面
+                        window.reloadTableTop = function () {
+                            const wood = document.querySelector('.wood-option.active').dataset.wood;
+                            const shape = document.querySelector('.shape-option.active').dataset.shape;
+                            const obj = `${topPath}/TableTop_${shape}_${wood}.obj`;
+                            const mtl = `${topPath}/TableTop_${shape}_${wood}.mtl`;
 
-                                // TODO: 根据 woodType 加载对应材质
-                                // 例如: /static/images/wood_oak.mtl, /static/images/wood_walnut.mtl
-                            }
+                            if (currentTop) scene.remove(currentTop);
+                            loadModel(obj, mtl, (obj) => {
+                                currentTop = obj;
+                                scene.add(obj);
+                                applyConfig();          // 统一缩放
+                            });
+                        };
 
-                            // 桌腿 - 根据桌腿类型切换模型
-                            if (tableLegs) {
-                                tableLegs.scale.set(L, T, W); 
-                                const box = new THREE.Box3().setFromObject(tableLegs);
-                                const size = box.getSize(new THREE.Vector3());
-                                console.log('桌腿当前尺寸 (L×T×W):', size.x.toFixed(2), size.y.toFixed(2), size.z.toFixed(2));
+                        // 根据当前选项加载桌腿
+                        window.reloadTableLegs = function () {
+                            const wood = document.querySelector('.wood-option.active').dataset.wood;
+                            const leg = document.querySelector('.leg-option.active').dataset.leg;
+                            const obj = `${legPath}/TableLegs_${leg}_${wood}.obj`;
+                            const mtl = `${legPath}/TableLegs_${leg}_${wood}.mtl`;
 
-                                // TODO: 根据 legType 切换不同的桌腿模型
-                                // 例如: /static/images/tableLeg_type1.obj, /static/images/tableLeg_type2.obj
-                                // /static/images/tableLeg_type3.obj, /static/images/tableLeg_type4.obj
-                                // /static/images/tableLeg_type5.obj
-
-                                // TODO: 桌腿材质也需要根据 woodType 切换
-                                // 例如: /static/images/tableLeg_oak.mtl, /static/images/tableLeg_walnut.mtl
-                            }
+                            if (currentLegs) scene.remove(currentLegs);
+                            loadModel(obj, mtl, (obj) => {
+                                currentLegs = obj;
+                                scene.add(obj);
+                                applyConfig();
+                            });
                         };
                     </script>
                 </div>
@@ -275,7 +227,7 @@
                 <div class="config-group">
                     <div class="config-label">木材种类</div>
                     <div class="wood-options">
-                        <div class="wood-option active" data-wood="oak" style="background-color: #f5e6d3;"
+                        <div class="wood-option" data-wood="oak" style="background-color: #f5e6d3;"
                             onclick="selectWood(this)">
                             <div class="wood-option-label">白橡木</div>
                         </div>
@@ -295,7 +247,7 @@
                             onclick="selectWood(this)">
                             <div class="wood-option-label">榉木</div>
                         </div>
-                        <div class="wood-option" data-wood="cedar" style="background-color: #6b5d3f;"
+                        <div class="wood-option" data-wood="Cedar" style="background-color: #6b5d3f;"
                             onclick="selectWood(this)">
                             <div class="wood-option-label">红杉木</div>
                         </div>
@@ -306,26 +258,29 @@
                 <div class="config-group">
                     <div class="config-label">桌面</div>
                     <div class="shape-options">
-                        <div class="shape-option active" data-shape="rect" onclick="selectShape(this)">
+                        <!-- 长桌 -->
+                        <div class="shape-option" data-shape="Long" onclick="selectShape(this)">
                             <svg viewBox="0 0 80 60" fill="#8b2332" stroke="none">
                                 <rect x="10" y="10" width="60" height="40" rx="4" />
                             </svg>
                         </div>
-                        <div class="shape-option" data-shape="oval1" onclick="selectShape(this)">
+                        <!-- 方桌 -->
+                        <div class="shape-option" data-shape="Square" onclick="selectShape(this)">
                             <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
-                                <rect x="10" y="10" width="60" height="40" rx="20" />
+                                <rect x="20" y="10" width="40" height="40" rx="4" />
                             </svg>
                         </div>
-                        <div class="shape-option" data-shape="oval2" onclick="selectShape(this)">
+                        <!-- 圆桌 -->
+                        <div class="shape-option" data-shape="Cricle" onclick="selectShape(this)">
                             <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
-                                <rect x="15" y="10" width="50" height="40" rx="25" />
+                                <circle cx="40" cy="30" r="20" />
                             </svg>
                         </div>
-                        <div class="shape-option" data-shape="ellipse" onclick="selectShape(this)">
+                        <!-- <div class="shape-option" data-shape="ellipse" onclick="selectShape(this)">
                             <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
                                 <ellipse cx="40" cy="30" rx="30" ry="20" />
                             </svg>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -363,12 +318,12 @@
                 <div class="config-group">
                     <div class="config-label">桌腿</div>
                     <div class="leg-options">
-                        <div class="leg-option active" data-leg="type1" onclick="selectLeg(this)">
+                        <div class="leg-option active" data-leg="Long" onclick="selectLeg(this)">
                             <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
                                 <path d="M20,10 L20,70 L15,75 L25,75 L20,70 Z M40,10 L40,70 L35,75 L45,75 L40,70 Z" />
                             </svg>
                         </div>
-                        <div class="leg-option" data-leg="type2" onclick="selectLeg(this)">
+                        <div class="leg-option" data-leg="Square" onclick="selectLeg(this)">
                             <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
                                 <rect x="18" y="10" width="4" height="65" />
                                 <rect x="38" y="10" width="4" height="65" />
@@ -376,13 +331,13 @@
                                 <line x1="35" y1="75" x2="45" y2="75" stroke-width="3" />
                             </svg>
                         </div>
-                        <div class="leg-option" data-leg="type3" onclick="selectLeg(this)">
+                        <div class="leg-option" data-leg="Cricle" onclick="selectLeg(this)">
                             <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
                                 <path d="M30,10 L10,70 M30,10 L50,70" />
                                 <path d="M10,70 L50,70 M50,70 L30,10 M10,70 L30,10" />
                             </svg>
                         </div>
-                        <div class="leg-option" data-leg="type4" onclick="selectLeg(this)">
+                        <!-- <div class="leg-option" data-leg="type4" onclick="selectLeg(this)">
                             <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
                                 <path d="M15,10 L45,10 M15,10 L10,70 M45,10 L50,70" />
                                 <path d="M10,70 L15,70 M50,70 L45,70" />
@@ -395,7 +350,7 @@
                                 <line x1="35" y1="10" x2="35" y2="70" />
                                 <line x1="45" y1="10" x2="45" y2="70" />
                             </svg>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -502,26 +457,41 @@
     <!-- 配置交互脚本 -->
     <script>
         // 木材选择
-        function selectWood(element) {
-            document.querySelectorAll('.wood-option').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            if (window.applyConfig) window.applyConfig();
+        function selectWood(el) {
+            document.querySelectorAll('.wood-option').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            reloadTableTop();
+            reloadTableLegs();
+            printCurrentConfig();
         }
 
         // 形状选择
-        function selectShape(element) {
-            document.querySelectorAll('.shape-option').forEach(el => {
-                el.classList.remove('active');
-            });
-            element.classList.add('active');
-            if (window.applyConfig) window.applyConfig();
+        function selectShape(el) {
+            document.querySelectorAll('.shape-option').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            reloadTableTop();
+            printCurrentConfig();
         }
 
         // 桌腿选择
-        function selectLeg(element) {
-            document.querySelectorAll('.leg-option').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-            if (window.applyConfig) window.applyConfig();
+        function selectLeg(el) {
+            document.querySelectorAll('.leg-option').forEach(e => e.classList.remove('active'));
+            el.classList.add('active');
+            reloadTableLegs();
+            printCurrentConfig();
+        }
+
+        // 把当前所有选型拼成字符串
+        function printCurrentConfig() {
+            const wood = document.querySelector('.wood-option.active')?.dataset.wood || '未选择';
+            const shape = document.querySelector('.shape-option.active')?.dataset.shape || '未选择';
+            const leg = document.querySelector('.leg-option.active')?.dataset.leg || '未选择';
+            const len = document.getElementById('len').value;
+            const wid = document.getElementById('wid').value;
+            const th = document.getElementById('thickness').value;
+
+            const str = `木材：${wood} | 形状：${shape} | 桌腿：${leg} | 尺寸：${len}×${wid}×${th} cm`;
+            console.log(str);                       // 控制台输出
         }
 
         // 滑块更新
