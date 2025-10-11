@@ -28,7 +28,7 @@ body {
     align-items: center;
 }
 
-/* 新增样式：定义小横杠的样式 */
+/* 小横杠的样式 */
 .sidebar-title-divider {
     content: "";
     width: 10px;
