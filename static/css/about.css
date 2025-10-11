@@ -135,14 +135,14 @@
  .avatar-name {
      font-size: 16px;
      font-weight: 500;
-     color: #333;
+     color: #171818;
      margin-bottom: 8px;
      margin-top: 0;
  }
 
  .avatar-position {
      font-size: 12px;
-     color: #999;
+     color: #171818;
      line-height: 1.6;
      margin: 0;
  }
@@ -154,17 +154,19 @@
  .testimonial-quote {
      font-size: 16px;
      line-height: 1.8;
-     color: #666;
+     color: #585656;
+     padding: 0 200px;
      margin-bottom: 20px;
  }
 
  .read-full {
+    margin-left: 85%;
      color: #333;
      text-decoration: none;
-     font-size: 14px;
+     font-size: 17px;
      display: inline-flex;
      align-items: center;
-     margin-top: 10px;
+     margin-top: 40px;
  }
 
  .read-full::after {
