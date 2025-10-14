@@ -175,9 +175,9 @@ window.applyConfig = function () {
     const widCm = +document.getElementById('wid').value;
     const thCm = +document.getElementById('thickness').value;
 
-    const L = lenCm / 160000;
-    const W = widCm / 120000;
-    const T = thCm / 5000;
+    const L = lenCm / 1650 / 100;
+    const W = widCm / 900 / 100;
+    const T = thCm / 50 / 100;
 
     if (currentTop) currentTop.scale.set(L, T, W);
     if (currentLegs) currentLegs.scale.set(L, T, W);
