@@ -399,7 +399,8 @@
 
             // 如果当前是方桌或圆桌，则联动另一个滑块
             const currentShape = document.querySelector('.shape-option.active')?.dataset.shape;
-            if (currentShape === 'Square' || currentShape === 'Cricle') {
+            if ((currentShape === 'Square' || currentShape === 'Cricle') &&
+                (id === 'len' || id === 'wid')) {
                 const otherId = (id === 'len') ? 'wid' : 'len';
                 const otherSlider = document.getElementById(otherId);
                 const otherDisplay = document.getElementById(otherId + '-display');
