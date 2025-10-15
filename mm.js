@@ -61,6 +61,9 @@ scene.add(ground);
 
 // 7 加载obj
 let currentTop = null, currentLegs = null;
+// 存储模型的原始尺寸
+let topOriginalSize = null, legsOriginalSize = null;
+
 const TablePath = '/static/images/models';
 
 //通用的 MTL 文件路径
@@ -169,84 +172,121 @@ function animate() {
 };
 animate();
 
-// 9 交互控制
-// 返回当前选中的形状字符串：'Long' | 'Square' | 'Cricle'
-function getCurrentShape() {
-  const active = document.querySelector('.shape-option.active');
-  // 如果页面还没有选中任何形状，先回退到 Long
-  return active ? active.dataset.shape : 'Long';
+// ============ 新增：动态缩放功能 ============
+
+// 获取模型的实际尺寸（边界盒）
+function getModelSize(model) {
+    const box = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    return size;
 }
 
-// 根据形状拿到对应的默认尺寸对象
-function getDefaultSize(shape) {
-  return defaultSizes[shape] || defaultSizes['Long'];
-}
-
-//缩放
+// 9 交互控制 - 改进版，使用动态拉伸
 window.applyConfig = function () {
     const lenCm = +document.getElementById('len').value;
     const widCm = +document.getElementById('wid').value;
     const thCm = +document.getElementById('thickness').value;
 
-    //当前形状
-    const shape     = getCurrentShape();
-    const def       = getDefaultSize(shape);
+    console.log('目标尺寸(cm):', {长: lenCm, 宽: widCm, 厚: thCm});
+    
+    // 缩放因子：将模型单位转换为合理的场景单位（假设模型单位是毫米，场景单位是米）
+    const UNIT_SCALE = 0.01; // 1个模型单位 = 0.01个场景单位
 
-    //计算缩放比例
-    const L = (lenCm / 1000) / def.len;  // 长度方向
-    const W = (widCm / 1000) / def.wid;  // 宽度方向
-    const T = (thCm  / 1000) / 5;   // 厚度方向
+    // 动态缩放桌面
+    if (currentTop && topOriginalSize) {
+        const scaleX = (lenCm * UNIT_SCALE) / topOriginalSize.x;
+        const scaleY = (thCm * UNIT_SCALE) / topOriginalSize.y;
+        const scaleZ = (widCm * UNIT_SCALE) / topOriginalSize.z;
+        
+        console.log('桌面缩放比例:', {X: scaleX, Y: scaleY, Z: scaleZ});
+        
+        currentTop.scale.set(scaleX, scaleY, scaleZ);
+        
+        // 桌面位置：放在桌腿顶部
+        if (currentLegs && legsOriginalSize) {
+            const legsHeight = legsOriginalSize.y * UNIT_SCALE; // 桌腿高度（转换为场景单位）
+            const actualTopThickness = topOriginalSize.y * scaleY;
+            currentTop.position.y = legsHeight + actualTopThickness / 2;
+            console.log('桌腿高度:', legsHeight, '桌面厚度:', actualTopThickness, '桌面位置Y:', currentTop.position.y);
+        } else {
+            currentTop.position.y = topOriginalSize.y * scaleY / 2;
+        }
+    }
 
-    if (currentTop) currentTop.scale.set(L, T, W);
-    if (currentLegs) currentLegs.scale.set(L, T, W);
+    // 动态缩放桌腿
+    if (currentLegs && legsOriginalSize) {
+        const scaleX = (lenCm * UNIT_SCALE) / legsOriginalSize.x;
+        const scaleZ = (widCm * UNIT_SCALE) / legsOriginalSize.z;
+        const scaleY = UNIT_SCALE; // 桌腿高度也要缩放到场景单位
+        
+        console.log('桌腿缩放比例:', {X: scaleX, Y: scaleY, Z: scaleZ});
+        console.log('桌腿缩放后尺寸:', {
+            X: legsOriginalSize.x * scaleX, 
+            Y: legsOriginalSize.y * scaleY, 
+            Z: legsOriginalSize.z * scaleZ
+        });
+        
+        currentLegs.scale.set(scaleX, scaleY, scaleZ);
+        
+        // 桌腿位置：保持在地面上
+        currentLegs.position.y = 0;
+    }
 };
 
-// 根据当前选项加载桌面+桌腿 (只传 OBJ 路径和 woodType)
+// 根据当前选项加载桌面 (只传 OBJ 路径和 woodType)
 window.reloadTableTop = function () {
     const wood = document.querySelector('.wood-option.active').dataset.wood;
     const shape = document.querySelector('.shape-option.active').dataset.shape;
-    const leg = document.querySelector('.leg-option.active').dataset.leg;
-    // OBJ
+    // OBJ 路径保持不变
     const obj = `${TablePath}/TableTop_${shape}.obj`;
-    const obj_legs = `${TablePath}/TableLegs_${shape}_${leg}.obj`;
 
     if (currentTop) scene.remove(currentTop);
     // 调用 loadModel，传入 wood 类型
     loadModel(obj, wood, (obj) => {
-        currentTop = obj;
-        scene.add(obj);
-        applyConfig();
-    });
-
-    if (currentLegs) scene.remove(currentLegs);
-    // 调用 loadModel，传入 wood 类型
-    loadModel(obj_legs, wood, (obj) => {
-        currentLegs = obj;
-        scene.add(obj);
-        applyConfig();
+        if (obj) {
+            currentTop = obj;
+            // 记录原始尺寸
+            topOriginalSize = getModelSize(obj);
+            console.log('桌面原始尺寸:', topOriginalSize);
+            console.log('桌面原始位置:', obj.position);
+            scene.add(obj);
+            applyConfig();
+        }
     });
 };
 
-// // 根据当前选项加载桌腿 (只传 OBJ 路径和 woodType)
-// window.reloadTableLegs = function () {
-//     const wood = document.querySelector('.wood-option.active').dataset.wood;
-//     const shape = document.querySelector('.shape-option.active').dataset.shape;
-//     const leg = document.querySelector('.leg-option.active').dataset.leg;
-//     // OBJ 路径
-//     const obj = `${TablePath}/TableLegs_${shape}_${leg}.obj`;
-    
-//     if (currentLegs) scene.remove(currentLegs);
-//     // 调用 loadModel，传入 wood 类型
-//     loadModel(obj, wood, (obj) => {
-//         currentLegs = obj;
-//         scene.add(obj);
-//         applyConfig();
-//     });
-// };
+// 根据当前选项加载桌腿 (只传 OBJ 路径和 woodType)
+window.reloadTableLegs = function () {
+    const wood = document.querySelector('.wood-option.active').dataset.wood;
+    const leg = document.querySelector('.leg-option.active').dataset.leg;
+    // OBJ 路径保持不变
+    const obj = `${TablePath}/TableLegs_${leg}.obj`;
+
+    if (currentLegs) scene.remove(currentLegs);
+    // 调用 loadModel，传入 wood 类型
+    loadModel(obj, wood, (obj) => {
+        if (obj) {
+            currentLegs = obj;
+            // 记录原始尺寸
+            legsOriginalSize = getModelSize(obj);
+            console.log('桌腿原始尺寸:', legsOriginalSize);
+            console.log('桌腿原始位置:', obj.position);
+            
+            // 获取桌腿的边界盒信息
+            const box = new THREE.Box3().setFromObject(obj);
+            console.log('桌腿边界盒 min:', box.min);
+            console.log('桌腿边界盒 max:', box.max);
+            
+            scene.add(obj);
+            applyConfig();
+        }
+    });
+};
 
 // 确保初始化加载
 window.addEventListener('DOMContentLoaded', (event) => {
     // 假设在 HTML 中已经为第一个 wood/shape/leg 选项添加了 'active' 类
     if (window.reloadTableTop) window.reloadTableTop();
-    // if (window.reloadTableLegs) window.reloadTableLegs();
+    if (window.reloadTableLegs) window.reloadTableLegs();
 });
