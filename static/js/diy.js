@@ -183,7 +183,7 @@ function getDefaultSize(shape) {
 }
 
 //缩放
-//  假设这是您的模型尺寸基准值，从调试信息中得出
+//模型尺寸基准值
 const LEGS_HEIGHT = 6.3; // 桌腿模型在 TT=0.0100 缩放下的总高度
 const TOP_BOTTOM_OFFSET_SCALE_001 = 6.4; // 桌面模型在 T=0.0100 缩放下，底部距离世界原点的 Y 坐标
 
