@@ -85,30 +85,26 @@
                 <div class="config-group">
                     <div class="config-label">木材种类</div>
                     <div class="wood-options">
-                        <div class="wood-option" data-wood="oak" style="background-color: #f5e6d3;"
+                        <div class="wood-option active" data-wood="white-ash" style="background-color: #f9f3e8;"
                             onclick="selectWood(this)">
-                            <div class="wood-option-label">白橡木</div>
+                            <div class="wood-option-label">白蜡木</div>
                         </div>
-                        <div class="wood-option" data-wood="Walnut" style="background-color: #3e2723;"
+                        <div class="wood-option" data-wood="walnut" style="background-color: #876755;"
                             onclick="selectWood(this)">
                             <div class="wood-option-label">黑胡桃木</div>
                         </div>
-                        <div class="wood-option" data-wood="redwood" style="background-color: #8b2332;"
+                        <div class="wood-option" data-wood="cherry" style="background-color: #e4c29b;"
                             onclick="selectWood(this)">
-                            <div class="wood-option-label">红木</div>
+                            <div class="wood-option-label">樱桃木</div>
                         </div>
-                        <div class="wood-option" data-wood="red-oak" style="background-color: #c17853;"
+                        <div class="wood-option" data-wood="oak" style="background-color: #f4e7d1;"
                             onclick="selectWood(this)">
-                            <div class="wood-option-label">红橡木</div>
+                            <div class="wood-option-label">法国白橡木</div>
                         </div>
-                        <div class="wood-option" data-wood="beech" style="background-color: #d4a952;"
-                            onclick="selectWood(this)">
-                            <div class="wood-option-label">榉木</div>
-                        </div>
-                        <div class="wood-option active" data-wood="Cedar" style="background-color: #6b5d3f;"
+                        <!-- <div class="wood-option active" data-wood="cedar" style="background-color: #6b5d3f;"
                             onclick="selectWood(this)">
                             <div class="wood-option-label">红杉木</div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -147,27 +143,28 @@
                     <div class="slider-control">
                         <div class="slider-label">
                             <span>长度</span>
-                            <span class="slider-value"><span id="len-display">160</span> cm</span>
+                            <span class="slider-value"><span id="len-display">160</span>
+                                cm</span>
                         </div>
-                        <input id="len" type="range" min="100" max="240" step="1" value="160"
+                        <input id="len" type="range" min="100" max="240" step="20" value="160"
                             oninput="updateSlider('len')">
                     </div>
-
                     <div class="slider-control">
                         <div class="slider-label">
                             <span>宽度</span>
-                            <span class="slider-value"><span id="wid-display">120</span> cm</span>
+                            <span class="slider-value"><span id="wid-display">120</span>
+                                cm</span>
                         </div>
-                        <input id="wid" type="range" min="60" max="180" step="1" value="120"
+                        <input id="wid" type="range" min="60" max="180" step="20" value="120"
                             oninput="updateSlider('wid')">
                     </div>
-
                     <div class="slider-control">
                         <div class="slider-label">
                             <span>厚度</span>
-                            <span class="slider-value"><span id="thickness-display">5</span> cm</span>
+                            <span class="slider-value"><span id="thickness-display">5</span>
+                                cm</span>
                         </div>
-                        <input id="thickness" type="range" min="3" max="10" step="0.5" value="5"
+                        <input id="thickness" type="range" min="2" max="6" step="1" value="4"
                             oninput="updateSlider('thickness')">
                     </div>
                 </div>

@@ -53,7 +53,7 @@ body {
 
 .config-group {
     margin-bottom: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 30px;
     border-bottom: 1px solid #e9ecef;
 }
 
@@ -71,7 +71,7 @@ body {
 /* 木材种类选择 */
 .wood-options {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
