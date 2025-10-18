@@ -10,7 +10,7 @@ scene.background = new THREE.Color(0xffffff);
 
 // 2 相机
 const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
-camera.position.set(18, 20, -15);
+camera.position.set(20, 20, -15);
 camera.lookAt(0, 0, 0);
 
 // 3 渲染器 

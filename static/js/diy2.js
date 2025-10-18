@@ -1,17 +1,17 @@
 // 配置不同桌面的默认尺寸 {长度, 宽度}，单位为 cm，同时配置 min/max 以便在切换时更新
 const defaultSizes = {
     // 长桌的默认值（和 HTML 初始值保持一致，或者设置你想要的默认值）
-    'Long': { len: 165, wid: 90, minLen: 100, maxLen: 240, minWid: 60, maxWid: 150 },
+    'Long': { len: 200, wid: 100, minLen: 160, maxLen: 240, minWid: 60, maxWid: 120 },
     // 方桌的默认值 (长宽相等，且范围更小)
-    'Square': { len: 85, wid: 85, minLen: 50, maxLen: 150, minWid: 50, maxWid: 150 },
+    'Square': { len: 100, wid: 100, minLen: 100, maxLen: 120, minWid: 100, maxWid: 120 },
     // 圆桌的默认值 (长宽相等，使用直径，且范围更小)
-    'Cricle': { len: 140, wid: 140, minLen: 100, maxLen: 180, minWid: 100, maxWid: 180 }
+    'Cricle': { len: 100, wid: 100, minLen: 100, maxLen: 120, minWid: 100, maxWid: 120 }
 };
 
 // 木材选择
 function selectWood(el) {
     document.querySelectorAll('.wood-option').forEach(e => e.classList.remove('active'));
-    el.classList.add('active');
+    el.classList.add('active'); 
     reloadTableTop();
     // reloadTableLegs();
     printCurrentConfig();
