@@ -1,0 +1,3 @@
+web.py==0.62
+pymysql==1.1.0
+cryptography  # PyMySQL 在某些认证方式下需要

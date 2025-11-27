@@ -1,0 +1,210 @@
+$def with (tasks)
+
+<!-- 
+    定义样式映射字典 
+    这样做可以避免在 HTML 属性中写复杂的 Python 代码导致的解析错误
+-->
+$ status_border = {'Todo': 'border-danger', 'In Progress': 'border-warning', 'Done': 'border-success'}
+$ status_badge = {'Todo': 'bg-secondary', 'In Progress': 'bg-primary', 'Done': 'bg-success'}
+$ priority_badge = {'High': 'bg-danger', 'Medium': 'bg-warning text-dark', 'Low': 'bg-info text-dark'}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>任务列表</h2>
+    <button class="btn btn-primary" onclick="openModal('add')">
+        + 新增任务
+    </button>
+</div>
+
+<!-- 筛选工具栏 -->
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <form action="/tasks" method="GET" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">所有状态</option>
+                    <option value="Todo">待办 (Todo)</option>
+                    <option value="In Progress">进行中</option>
+                    <option value="Done">已完成</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <input type="text" name="assignee" class="form-control form-control-sm" placeholder="搜索负责人...">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-secondary btn-sm">筛选</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    $for task in tasks:
+        <!-- 获取当前任务对应的样式类 -->
+        $ s_border = status_border.get(task.status, 'border-secondary')
+        $ s_bg = status_badge.get(task.status, 'bg-secondary')
+        $ p_bg = priority_badge.get(task.priority, 'bg-secondary')
+        
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 border-start border-4 $s_border">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title text-truncate" title="$task.title">$task.title</h5>
+                        <span class="badge rounded-pill $p_bg">$task.priority</span>
+                    </div>
+                    <p class="card-text text-muted small mb-2">
+                        <i class="bi bi-person"></i> $task.assignee
+                    </p>
+                    <div class="d-flex justify-content-between align-items-end">
+                        <span class="badge $s_bg">$task.status</span>
+                        $if task.due_date:
+                            <small class="text-muted">$task.due_date</small>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-end gap-2">
+                        <!-- 注意：这里使用了 json.dumps，确保 app.py 的 globals 中包含了 json -->
+                        <button class="btn btn-sm btn-outline-primary" 
+                            onclick='openModal("edit", $:json_dumps(task))'>编辑</button>
+                        <button class="btn btn-sm btn-outline-danger" 
+                            onclick="deleteTask($task.task_id)">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="taskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">任务</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="taskForm">
+                    <input type="hidden" id="taskId">
+                    <div class="mb-3">
+                        <label class="form-label">标题</label>
+                        <input type="text" class="form-control" id="title" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">负责人</label>
+                            <input type="text" class="form-control" id="assignee" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">截止日期</label>
+                            <input type="date" class="form-control" id="dueDate">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">优先级</label>
+                            <select class="form-select" id="priority">
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">状态</label>
+                            <select class="form-select" id="status">
+                                <option value="Todo">Todo</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Done">Done</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveTask()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 1. 先定义全局变量，但不赋值
+let taskModal; 
+let currentMode = 'add';
+
+// 2. 等待页面所有元素加载完毕后，再初始化 Modal
+document.addEventListener('DOMContentLoaded', function() {
+    // 此时 HTML 元素肯定存在了，Bootstrap 库也加载了
+    const modalEl = document.getElementById('taskModal');
+    if (modalEl) {
+        taskModal = new bootstrap.Modal(modalEl);
+    } else {
+        console.error("找不到模态框元素 taskModal");
+    }
+});
+
+function openModal(mode, task = null) {
+    // 3. 检查 taskModal 是否初始化成功
+    if (!taskModal) {
+        alert("页面初始化未完成，请刷新重试");
+        return;
+    }
+
+    currentMode = mode;
+    document.getElementById('modalTitle').innerText = mode === 'add' ? '新增任务' : '编辑任务';
+    
+    if (mode === 'edit' && task) {
+        document.getElementById('taskId').value = task.task_id;
+        document.getElementById('title').value = task.title;
+        document.getElementById('assignee').value = task.assignee;
+        document.getElementById('priority').value = task.priority;
+        document.getElementById('status').value = task.status;
+        document.getElementById('dueDate').value = task.due_date || '';
+    } else {
+        document.getElementById('taskForm').reset();
+        document.getElementById('taskId').value = '';
+    }
+    taskModal.show();
+}
+
+function saveTask() {
+    const data = {
+        task_id: document.getElementById('taskId').value,
+        title: document.getElementById('title').value,
+        assignee: document.getElementById('assignee').value,
+        priority: document.getElementById('priority').value,
+        status: document.getElementById('status').value,
+        due_date: document.getElementById('dueDate').value
+    };
+
+    const method = currentMode === 'add' ? 'POST' : 'PUT';
+    
+    fetch('/api/tasks', {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.status === 'success') {
+            location.reload(); 
+        } else {
+            alert('Error: ' + res.message);
+        }
+    })
+    .catch(err => alert('网络错误: ' + err));
+}
+
+function deleteTask(id) {
+    if(!confirm('确定要删除此任务吗？')) return;
+    
+    fetch('/api/tasks', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task_id: id })
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.status === 'success') location.reload();
+        else alert('Error: ' + res.message);
+    });
+}
+</script>

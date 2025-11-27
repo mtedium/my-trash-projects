@@ -1,0 +1,121 @@
+$def with ()
+<div class="row">
+    <!-- 1. 任务状态分布 -->
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-white fw-bold">工作完成度</div>
+            <div class="card-body">
+                <div id="chart-status" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 2. 负责人任务堆叠 -->
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header bg-white fw-bold">团队负载 (按状态)</div>
+            <div class="card-body">
+                <div id="chart-assignee" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <!-- 3. 任务创建趋势 -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-white fw-bold">任务新增趋势</div>
+            <div class="card-body">
+                <div id="chart-trend" style="height: 350px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/stats')
+        .then(response => response.json())
+        .then(data => {
+            // Chart 1: Pie
+            const statusChart = echarts.init(document.getElementById('chart-status'));
+            statusChart.setOption({
+                tooltip: { trigger: 'item' },
+                legend: { bottom: '0%' },
+                series: [{
+                    name: 'Status',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    data: data.status_chart,
+                    emphasis: { itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.5)' } }
+                }]
+            });
+
+            // Chart 2: Stacked Bar
+            const assigneeChart = echarts.init(document.getElementById('chart-assignee'));
+            assigneeChart.setOption({
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: {},
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: { type: 'value' },
+                yAxis: { type: 'category', data: data.assignee_chart.categories },
+                series: [
+                    { name: 'Todo', type: 'bar', stack: 'total', label: { show: true }, data: data.assignee_chart.series['Todo'] },
+                    { name: 'In Progress', type: 'bar', stack: 'total', label: { show: true }, data: data.assignee_chart.series['In Progress'] },
+                    { name: 'Done', type: 'bar', stack: 'total', label: { show: true }, data: data.assignee_chart.series['Done'] }
+                ]
+            });
+
+            // Chart 3: Line Area (任务趋势图)
+            const trendChart = echarts.init(document.getElementById('chart-trend'));
+            trendChart.setOption({
+                tooltip: { 
+                    trigger: 'axis',
+                    formatter: '{b} <br/> 新增任务: {c} 个' // 自定义提示文案
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: { 
+                    type: 'category', 
+                    boundaryGap: false, 
+                    data: data.trend_chart.dates 
+                },
+                yAxis: { 
+                    type: 'value',
+                    minInterval: 1 // 保证 Y 轴刻度是整数（任务数不可能是小数）
+                },
+                series: [{
+                    name: '新增任务',
+                    data: data.trend_chart.counts,
+                    type: 'line',
+                    smooth: true,        // 🟢 开启平滑曲线
+                    showSymbol: true,    // 🟢 强制显示数据点
+                    symbol: 'circle',    // 数据点形状
+                    symbolSize: 8,       // 🟢 数据点大小（调大一点，防只有一个点时看不见）
+                    areaStyle: {
+                        opacity: 0.3,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(13, 110, 253, 0.8)' },
+                            { offset: 1, color: 'rgba(13, 110, 253, 0.1)' }
+                        ])
+                    },
+                    itemStyle: {
+                        color: '#0d6efd'
+                    }
+                }]
+            });
+            
+            // Resize handling
+            window.addEventListener('resize', function() {
+                statusChart.resize();
+                assigneeChart.resize();
+                trendChart.resize();
+            });
+        });
+});
+</script>
