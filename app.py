@@ -19,7 +19,7 @@ urls = (
 # --- 数据库连接 ---
 # 请确保密码正确
 db = web.database(
-    dbn="mysql", user="root", pw="password", db="todo_project", driver="pymysql"
+    dbn="mysql", user="root", pw="YOUR_PASSWORD", db="todo_project", driver="pymysql"
 )
 
 
