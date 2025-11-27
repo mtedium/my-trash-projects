@@ -39,37 +39,36 @@ $ priority_badge = {'High': 'bg-danger', 'Medium': 'bg-warning text-dark', 'Low'
 
 <div class="row">
     $for task in tasks:
-        <!-- 获取当前任务对应的样式类 -->
-        $ s_border = status_border.get(task.status, 'border-secondary')
-        $ s_bg = status_badge.get(task.status, 'bg-secondary')
-        $ p_bg = priority_badge.get(task.priority, 'bg-secondary')
-        
-        <div class="col-md-4 mb-3">
-            <div class="card h-100 border-start border-4 $s_border">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="card-title text-truncate" title="$task.title">$task.title</h5>
-                        <span class="badge rounded-pill $p_bg">$task.priority</span>
-                    </div>
-                    <p class="card-text text-muted small mb-2">
-                        <i class="bi bi-person"></i> $task.assignee
-                    </p>
-                    <div class="d-flex justify-content-between align-items-end">
-                        <span class="badge $s_bg">$task.status</span>
-                        $if task.due_date:
-                            <small class="text-muted">$task.due_date</small>
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-end gap-2">
-                        <!-- 注意：这里使用了 json.dumps，确保 app.py 的 globals 中包含了 json -->
-                        <button class="btn btn-sm btn-outline-primary" 
-                            onclick='openModal("edit", $:json_dumps(task))'>编辑</button>
-                        <button class="btn btn-sm btn-outline-danger" 
-                            onclick="deleteTask($task.task_id)">删除</button>
-                    </div>
+    <!-- 获取当前任务对应的样式类 -->
+    $ s_border = status_border.get(task.status, 'border-secondary')
+    $ s_bg = status_badge.get(task.status, 'bg-secondary')
+    $ p_bg = priority_badge.get(task.priority, 'bg-secondary')
+
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 border-start border-4 $s_border">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h5 class="card-title text-truncate" title="$task.title">$task.title</h5>
+                    <span class="badge rounded-pill $p_bg">$task.priority</span>
+                </div>
+                <p class="card-text text-muted small mb-2">
+                    <i class="bi bi-person"></i> $task.assignee
+                </p>
+                <div class="d-flex justify-content-between align-items-end">
+                    <span class="badge $s_bg">$task.status</span>
+                    $if task.due_date:
+                    <small class="text-muted">$task.due_date</small>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-end gap-2">
+                    <!-- 注意：这里使用了 json.dumps，确保 app.py 的 globals 中包含了 json -->
+                    <button class="btn btn-sm btn-outline-primary"
+                        onclick='openModal("edit", $:json_dumps(task))'>编辑</button>
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteTask($task.task_id)">删除</button>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -126,85 +125,85 @@ $ priority_badge = {'High': 'bg-danger', 'Medium': 'bg-warning text-dark', 'Low'
 </div>
 
 <script>
-// 1. 先定义全局变量，但不赋值
-let taskModal; 
-let currentMode = 'add';
+    // 1. 先定义全局变量，但不赋值
+    let taskModal;
+    let currentMode = 'add';
 
-// 2. 等待页面所有元素加载完毕后，再初始化 Modal
-document.addEventListener('DOMContentLoaded', function() {
-    // 此时 HTML 元素肯定存在了，Bootstrap 库也加载了
-    const modalEl = document.getElementById('taskModal');
-    if (modalEl) {
-        taskModal = new bootstrap.Modal(modalEl);
-    } else {
-        console.error("找不到模态框元素 taskModal");
-    }
-});
-
-function openModal(mode, task = null) {
-    // 3. 检查 taskModal 是否初始化成功
-    if (!taskModal) {
-        alert("页面初始化未完成，请刷新重试");
-        return;
-    }
-
-    currentMode = mode;
-    document.getElementById('modalTitle').innerText = mode === 'add' ? '新增任务' : '编辑任务';
-    
-    if (mode === 'edit' && task) {
-        document.getElementById('taskId').value = task.task_id;
-        document.getElementById('title').value = task.title;
-        document.getElementById('assignee').value = task.assignee;
-        document.getElementById('priority').value = task.priority;
-        document.getElementById('status').value = task.status;
-        document.getElementById('dueDate').value = task.due_date || '';
-    } else {
-        document.getElementById('taskForm').reset();
-        document.getElementById('taskId').value = '';
-    }
-    taskModal.show();
-}
-
-function saveTask() {
-    const data = {
-        task_id: document.getElementById('taskId').value,
-        title: document.getElementById('title').value,
-        assignee: document.getElementById('assignee').value,
-        priority: document.getElementById('priority').value,
-        status: document.getElementById('status').value,
-        due_date: document.getElementById('dueDate').value
-    };
-
-    const method = currentMode === 'add' ? 'POST' : 'PUT';
-    
-    fetch('/api/tasks', {
-        method: method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(res => {
-        if(res.status === 'success') {
-            location.reload(); 
+    // 2. 等待页面所有元素加载完毕后，再初始化 Modal
+    document.addEventListener('DOMContentLoaded', function () {
+        // 此时 HTML 元素肯定存在了，Bootstrap 库也加载了
+        const modalEl = document.getElementById('taskModal');
+        if (modalEl) {
+            taskModal = new bootstrap.Modal(modalEl);
         } else {
-            alert('Error: ' + res.message);
+            console.error("找不到模态框元素 taskModal");
         }
-    })
-    .catch(err => alert('网络错误: ' + err));
-}
-
-function deleteTask(id) {
-    if(!confirm('确定要删除此任务吗？')) return;
-    
-    fetch('/api/tasks', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task_id: id })
-    })
-    .then(res => res.json())
-    .then(res => {
-        if(res.status === 'success') location.reload();
-        else alert('Error: ' + res.message);
     });
-}
+
+    function openModal(mode, task = null) {
+        // 3. 检查 taskModal 是否初始化成功
+        if (!taskModal) {
+            alert("页面初始化未完成，请刷新重试");
+            return;
+        }
+
+        currentMode = mode;
+        document.getElementById('modalTitle').innerText = mode === 'add' ? '新增任务' : '编辑任务';
+
+        if (mode === 'edit' && task) {
+            document.getElementById('taskId').value = task.task_id;
+            document.getElementById('title').value = task.title;
+            document.getElementById('assignee').value = task.assignee;
+            document.getElementById('priority').value = task.priority;
+            document.getElementById('status').value = task.status;
+            document.getElementById('dueDate').value = task.due_date || '';
+        } else {
+            document.getElementById('taskForm').reset();
+            document.getElementById('taskId').value = '';
+        }
+        taskModal.show();
+    }
+
+    function saveTask() {
+        const data = {
+            task_id: document.getElementById('taskId').value,
+            title: document.getElementById('title').value,
+            assignee: document.getElementById('assignee').value,
+            priority: document.getElementById('priority').value,
+            status: document.getElementById('status').value,
+            due_date: document.getElementById('dueDate').value
+        };
+
+        const method = currentMode === 'add' ? 'POST' : 'PUT';
+
+        fetch('/api/tasks', {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') {
+                    location.reload();
+                } else {
+                    alert('Error: ' + res.message);
+                }
+            })
+            .catch(err => alert('网络错误: ' + err));
+    }
+
+    function deleteTask(id) {
+        if (!confirm('确定要删除此任务吗？')) return;
+
+        fetch('/api/tasks', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task_id: id })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === 'success') location.reload();
+                else alert('Error: ' + res.message);
+            });
+    }
 </script>
