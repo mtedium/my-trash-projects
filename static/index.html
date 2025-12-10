@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>禾下问：中国古代农业技术可视化系统</title>
+    
+    <!-- 引入 ECharts 5 (更炫酷) -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <!-- 引入 Model Viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.1.1/model-viewer.min.js"></script>
+    
+    <!-- 【重要】引入高德地图 API -->
+    <!-- 请替换这里的 key 为你申请的 Key -->
+    <script type="text/javascript">
+        window._AMapSecurityConfig = {
+            securityJsCode: 'd1e32d02be2b632db3fe94f7f58bfc2f' // 必填，否则地图无法加载
+        }
+    </script>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=cc82e89f886c16728d6c86d6c5631775"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 背景动态粒子层 -->
+    <div id="particles"></div>
+
+    <!-- 左侧悬浮导航 -->
+    <nav class="side-nav">
+        <div class="logo">禾下问</div>
+        <ul>
+            <li class="active" data-target="#section-timeline"><span>01</span> 历史脉络</li>
+            <li data-target="#section-map"><span>02</span> 空间分布</li>
+            <li data-target="#section-model"><span>03</span> 器物还原</li>
+            <li data-target="#section-compare"><span>04</span> 效能洞察</li>
+        </ul>
+    </nav>
+
+    <main id="fullpage">
+        
+        <!-- 第一屏：时间轴 (改为山峰图流) -->
+        <section id="section-timeline" class="screen">
+            <div class="content-box glass-panel">
+                <h2 class="neon-text">农艺 · 历史脉络</h2>
+                <div class="chart-wrapper" id="timeline-chart"></div>
+            </div>
+        </section>
+
+        <!-- 第二屏：高德地图 -->
+        <section id="section-map" class="screen">
+            <div class="map-box">
+                <!-- 地图容器 -->
+                <div id="amap-container"></div>
+                
+                <!-- 浮层控制面板 -->
+                <div class="map-overlay glass-panel">
+                    <h3>技术源流分布</h3>
+                    <div id="map-info-panel">点击地图标记查看详情</div>
+                </div>
+
+                <!-- 合规审图号 (必填，比赛扣分点) -->
+                <div class="map-license">GS(2024)1158号 | 数据来源: 中国农业遗产研究室</div>
+            </div>
+        </section>
+
+        <!-- 第三屏：3D模型 -->
+        <section id="section-model" class="screen">
+            <div class="content-split">
+                <div class="text-col glass-panel">
+                    <h2 class="neon-text">神工 · 曲辕犁</h2>
+                    <p class="desc-text">唐代中国农业技术的巅峰之作。长辕改短辕，加装犁评，可调节耕作深浅，标志着中国步犁技术的成熟。</p>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <span class="num">8-9</span>
+                            <span class="label">世纪发明</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="num">30%</span>
+                            <span class="label">省力提升</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-col">
+                    <model-viewer 
+                        src="assets/quyuanli.glb" 
+                        alt="曲辕犁"
+                        auto-rotate camera-controls
+                        shadow-intensity="2"
+                        exposure="0.8"
+                        style="width: 100%; height: 100%;"
+                    ></model-viewer>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四屏：雷达对比 -->
+        <section id="section-compare" class="screen">
+            <div class="content-box glass-panel">
+                <h2 class="neon-text">鉴往 · 古今效能</h2>
+                <div class="chart-wrapper" id="radar-chart"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
