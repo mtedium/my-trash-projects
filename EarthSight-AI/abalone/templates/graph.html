@@ -1,0 +1,77 @@
+{% extends 'master.html' %}
+
+{% block body %}
+<div style="height:150px"></div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+        <div style="height:400px;width:100%" id = "graph1"></div>
+        <img src="/media/{{fname}}" style="width:100%" class="img-rounded">
+    </div>
+    <div class="col-md-4">
+        <div style="height:400px;width:100%" id = "graph2"></div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+  // 基于准备好的dom，初始化echarts实例
+  var myChart = echarts.init(document.getElementById('graph1'));
+
+  // 指定图表的配置项和数据
+  var option = {
+    title: {
+      text: '鲍鱼年龄分布'
+    },
+    tooltip: {},
+    legend: {
+      data: ['年龄']
+    },
+    xAxis: {
+      data: {{x|safe}}
+    },
+    yAxis: {},
+    series: [
+      {
+        name: '年龄',
+        type: 'bar',
+        data: {{y|safe}}
+      }
+    ]
+  };
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+  var option2 = {
+  xAxis: {},
+  yAxis: {},
+  series: [
+    {
+      symbolSize: 10,
+      data: [
+        [10.0, 8.04],
+        [8.07, 6.95],
+        [13.0, 7.58],
+        [9.05, 8.81],
+  
+      ],
+      type: 'scatter'
+    }]
+}
+
+ $.ajax({
+    'url': '/Dashboard/graphApi',
+    'type': 'GET',
+    'success': function (response) {
+        var myChart2 = echarts.init(document.getElementById('graph2'));
+        option2["series"][0]["data"] = response["scatter"]
+        myChart2.setOption(option2);
+        
+    }
+})
+
+</script>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'master.html' %}
+
+{% block body %}
+
+<div style="height:150px"></div>
+<div class="row">
+    <div class="col-md-2"></div>
+
+    
+    <div class="col-md-4">
+      <div style="height:20px"></div>
+        <div class="row">
+            <img src="/static/img/{{request.GET.model}}.png" style="width:90%" class="img-rounded">
+        </div>
+
+    </div>
+    <div class="col-md-4">
+
+
+        <div class="row">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="font-size:20px">鲍鱼信息查询</h3>
+                </div>
+                <div class="panel-body">
+                    <div style="height:20px"></div>
+                
+                    <div style="height:50px"></div>
+                    <div class="row">
+                      <div class="col-md-1"></div>
+                      <div class="col-md-10">
+                        <form action = "" method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                        <table class="table table-striped" style="font-size:20px">
+                            <thead>
+                              <tr>
+                                <th style="width:30%">属性</th>
+                                <th style="width:20%">值</th>
+                                <th style="width:30%">属性</th>
+                                <th style="width:20%">值</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>sex</td>
+                                <td style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f1" value = "{{data.0}}"></td>
+                                <td>whole_weight</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f5" value = "{{data.4}}"></td>
+                              </tr>
+                              <tr>
+                                <td>length</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f2" value = "{{data.1}}"></td>
+                                <td>shucked_weight</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f6" value = "{{data.5}}"></td>
+                              </tr>
+                              <tr>
+                                <td>diameter</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f3" value = "{{data.2}}"></td>
+                                <td>viscera_weight</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f7" value = "{{data.6}}"></td>
+                              </tr>
+                              <tr>
+                                <td>height</td>
+                                <td style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f4" value = "{{data.3}}"></td>
+                                <td>shell_weight</td>
+                                <td  style="color:#ff0000"><input type="text" class="form-control" style="width:100%" name="f8" value = "{{data.7}}"></td>
+                              </tr>
+                                                           
+                            </tbody>
+                          </table>
+                            <div class="row">
+                                <div class="col-md-6">
+                                  <select class="form-control" id="model" name="model" onchange="func()" >
+                                    <option value="lr">LR模型</option>
+                                    <option value="svr">SVR模型</option>
+                                    <option value="lasso">LASSO模型</option>
+                                    <option value="ridge">Ridge模型</option>
+                                    <option value="dt">DT-R模型</option>
+                                    <option value="rf">RF-R模型</option>
+                                    <option value="xgboost">XGBoost模型</option>
+                                  </select>
+                                </div>
+                                <div class="col-md-6">
+                                  <button type="submit" class="btn btn-primary" style="font-size: 25px;width:100%">点击预测</button>
+                                </div>
+                            </div>
+
+                          </form>                         
+                    </div>
+                </div>
+            </div>            
+        </div>
+        <div style="height:30px"></div>
+        <div class="alert alert-danger">
+          <h1 style="color:#ff0000">预测年龄：{{agePred}}</h1>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+  function func(){
+
+    var model = jQuery("#model").val()
+    window.location.href = '?model='+model
+    $("#model").val('{{request.GET.model}}')
+
+  }
+  $("#model").val('{{request.GET.model}}')
+
+</script>
+
+{% endblock %}

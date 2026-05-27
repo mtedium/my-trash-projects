@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>医疗查询</title>
+	<link rel="stylesheet" href="../static/css/bootstrap.min.css">  
+	<script src="../static/js/jquery.min.js"></script>
+	<script src="../static/js/bootstrap.min.js"></script>
+  <script src="../static/js/echarts.js"></script>
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">&nbsp;医疗信息查询系统</a>
+    </div>
+    <div>
+        <ul class="nav navbar-nav" style="font-size:20px">
+            <li  ><a href="/Medicine/indexJs.html">Js</a></li>
+            <li class="active"><a href="/Medicine/indexAjax.html">Ajax</a></li>  
+            <li><a href="/Medicine/indexVue.html">Vue</a></li>    
+            <li ><a href="/Medicine/indexElement.html">Element</a></li>
+        </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div style="height:150px"></div>
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-5">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h3 class="panel-title">视频简介</h3>
+        </div>
+        <div class="panel-body">
+            <textarea class="form-control" rows="30" id="intro">视频简介</textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-md-5">
+        
+      <form action = "" method="post" enctype="multipart/form-data" class="form-inline">
+      <select class="form-control" id ="cate1" name="cate1" style="width:150px" onchange = "initCate2()">
+          <option value="内科">内科</option>
+          <option value="外科">外科</option>
+      </select>
+      <select class="form-control" id="cate2" name ="cate2" style="width:150px">
+          <option value="胃炎">胃炎</option>
+          <option value="肠炎">肠炎</option>
+      </select>
+      <button type="button" class="btn btn-primary" onclick = "search()">查询</button>
+      </form>
+        
+
+      <table class="table table-striped">
+        <caption>条纹表格布局</caption>
+        <thead> 
+          <tr>
+            <th>时间</th>
+            <th>视频</th>
+            <th>时长</th>
+            <th>医生</th>
+            <th>医院</th>
+            <th>播放次数</th>
+            <th>点赞</th>            
+          </tr>
+        </thead>
+        <tbody id = "tableData">
+          <tr>
+            <td>{{t.time}}</td>
+            <td>{{t.video}}</td>
+            <td>{{t.duration}}</td>
+            <td>{{t.doctor}}</td>
+            <td>{{t.hospital}}</td>
+            <td>{{t.count}}</td>
+            <td>{{t.zan}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    
+    var baseUrl = "http://localhost:8000"
+    var cate1 = ""
+    var cate2 = ""
+    var cateData = {}
+    
+    //获取url参数
+    function getQueryString(name){
+        var searchParams = new URLSearchParams(window.location.search);
+        if (searchParams.has(name)) {
+            return searchParams.get(name);
+        }
+        return null;
+    }
+
+    async function initCate1(){
+     
+      //获取cateData
+      await $.ajax({
+        'url': baseUrl+'/Medicine/cateApi',
+        'type': 'GET',
+        'success': function (response) {
+            cateData = response
+            // 加载一级目录 
+            var tmpHtml = ""
+            $.each(cateData, function(k,v){
+                tmpHtml += "<option value='"+k+"'>"+k+"</option>"
+            })
+            $("#cate1").html(tmpHtml)
+
+            //固定一级目录
+            $("#cate1").val(cate1)
+            
+          }
+      })
+    }
+
+
+
+    async function initCate2(){
+      console.log("FUNC2",cate1,cate2,cateData)
+      // 加载二级目录
+      var tmpHtml2 = ""
+      cate1 = $("#cate1").val()
+      $.each(cateData[cate1],function(i,v){
+          tmpHtml2 += "<option value='"+v+"'>"+v+"</option>"
+      })
+      $("#cate2").html(tmpHtml2)
+      // 固定二级目录
+      $("#cate2").val(cate2)
+
+    }
+
+    async function initData(){ 
+        $.ajax({
+          'url': baseUrl+'/Medicine/videoApi',
+          'type': 'GET',
+          'data':{"cate1":cate1,"cate2":cate2},
+          'success': function (response) {
+              var tmpHtml = ""
+              console.log(response)
+              $.each(response["videoData"],function(i,v){
+                tmpHtml +="<tr onclick='showIntro("+v["id"]+")'>"+
+                "<td>"+v["time"]+"</td>"+
+                "<td>"+v["video"]+"</td>"+
+                "<td>"+v["duration"]+"</td>"+
+                "<td>"+v["doctor"]+"</td>"+
+                "<td>"+v["hospital"]+"</td>"+
+                "<td>"+v["count"]+"</td>"+
+                "<td>"+v["zan"]+"</td>"+
+                "</tr>"
+              })
+              $("#tableData").html(tmpHtml)
+              
+            }
+        })     
+    }
+
+    
+
+    function search(){
+      cate1 = $("#cate1").val()
+      cate2 = $("#cate2").val()
+      //更新表格数据
+      initData()
+      //修改url但是不跳转
+      window.history.pushState({}, "", "?cate1="+cate1+"&cate2="+cate2)
+    }
+
+    function showIntro(id){
+      $.ajax({
+          'url': baseUrl+'/Medicine/introApi?id='+id,
+          'type': 'GET',
+          'success': function (response){
+            $("#intro").html(response["intro"])
+
+
+
+          }
+    })
+          
+     
+      
+    }
+
+
+    async function init(){
+      
+      cate1 = getQueryString("cate1")
+      cate2 = getQueryString("cate2")
+
+      if(cate1==null) cate1="内科"
+      if(cate2==null) cate2="胃炎"
+
+      await initCate1() //初始化一级目录
+      await initCate2() //初始化二级目录
+      await initData()  //初始化三级目录
+      
+    }
+
+
+    window.onload=init()
+</script>
+
+    
+</html>

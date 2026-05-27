@@ -1,0 +1,72 @@
+{% extends 'master.html' %}
+
+{% block body %}
+
+<div style="height:150px"></div>
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
+      <h1>训练历史</h1>
+      <div style="height:30px"></div>
+      <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>用户</th>
+                <th>模型</th>
+                <th>数据量</th>
+                <th>训练时长</th>
+                <th>预测效果(rmse)</th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              {% for t in trainData %}
+                <tr>
+                  <td>{{t.time}}</td>
+                  <td>{{t.username.name}}</td>
+                  <td>{{t.model}}</td>
+                  <td>{{t.datasize}}</td>
+                  <td>{{t.traintime|slice:":5"}}</td>
+                  <td>{{t.rmse|slice:":5"}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+      </table>
+
+      
+</div>
+ <div class="col-md-1"></div>
+    <div class="col-md-5">
+        <h1>预测历史</h1>
+        <div style="height:30px"></div>
+        <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>时间</th>
+            <th>用户</th>
+            <th>模型</th>
+            <th>数据</th>
+            <th>结果</th>
+           
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in predData %}
+            <tr>
+              <td>{{t.time}}</td>
+              <td>{{t.username.name}}</td>
+              <td>{{t.model}}</td>
+              <td>{{t.data}}</td>
+              <td>{{t.pred}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+          
+    </div>
+</div>
+    
+
+{% endblock %}

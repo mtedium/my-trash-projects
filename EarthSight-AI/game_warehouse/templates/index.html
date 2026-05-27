@@ -1,0 +1,97 @@
+$def with (games, stats, rate, keyword)
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <title>赛博玩家仓库</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🕹️ 赛博玩家·私人游戏收藏仓库</h1>
+
+        <!-- 数据可视化区域保持不变 -->
+        <div class="card chart-container">
+            <div id="pieChart" class="chart-box"></div>
+            <div id="gaugeChart" class="chart-box"></div>
+        </div>
+
+        <!-- 操作与搜索区 -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <a href="/add" class="btn">+ 添加新藏品</a>
+
+                <!-- 搜索表单：使用 GET 方法 -->
+                <form method="GET" action="/" class="search-form">
+                    <input type="text" name="keyword" value="$keyword" placeholder="搜索游戏标题..." class="search-input">
+                    <button type="submit" class="btn-search">扫描</button>
+                    $if keyword:
+                    <a href="/" style="color: #66c0f4; font-size: 12px; margin-left: 5px;">重置</a>
+                </form>
+            </div>
+
+            <table>
+                <!-- 表格内容保持不变 -->
+                <tr>
+                    <th>游戏名称</th>
+                    <th>平台</th>
+                    <th>类型</th>
+                    <th>状态</th>
+                    <th>评分</th>
+                    <th>操作</th>
+                </tr>
+                $for game in games:
+                <tr>
+                    <td>$game.title</td>
+                    <td>$game.platform</td>
+                    <td>$game.genre</td>
+                    <td>$game.status</td>
+                    <td>⭐ $game.rating</td>
+                    <td>
+                        <a href="/edit/$game.id" style="color:#66c0f4">修改</a> |
+                        <a href="/delete/$game.id" style="color:#ff4b4b" onclick="return confirm('确定要熔毁这件藏品吗？')">删除</a>
+                    </td>
+                </tr>
+            </table>
+
+            $if not games:
+            <p style="text-align: center; color: #888; margin-top: 20px;">未发现匹配的数字藏品...</p>
+        </div>
+    </div>
+    <!-- JS 部分保持不变 -->
+
+
+    <script>
+        // 1. 渲染饼图 (平台分布)
+        var pieDom = document.getElementById('pieChart');
+        var pieChart = echarts.init(pieDom, 'dark');
+        var pieData = [
+            $for item in stats:
+            { value: $item.count, name: '$item.platform' },
+        ];
+        pieChart.setOption({
+            backgroundColor: 'transparent',
+            title: { text: '平台分布', left: 'center' },
+            tooltip: { trigger: 'item' },
+            series: [{ type: 'pie', radius: '60%', data: pieData }]
+        });
+
+        // 2. 渲染仪表盘 (全通关率)
+        var gaugeDom = document.getElementById('gaugeChart');
+        var gaugeChart = echarts.init(gaugeDom, 'dark');
+        gaugeChart.setOption({
+            backgroundColor: 'transparent',
+            title: { text: '全通关进度', left: 'center' },
+            series: [{
+                type: 'gauge',
+                progress: { show: true },
+                detail: { valueAnimation: true, formatter: '{value}%', color: '#66c0f4' },
+                data: [{ value: $rate, name: '通关率' }]
+            }]
+        });
+    </script>
+</body>
+
+</html>

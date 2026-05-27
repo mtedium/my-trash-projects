@@ -1,0 +1,244 @@
+{% extends 'master.html' %}
+
+{% block body %}
+
+<div style="height:150px"></div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+      {% if notice %}
+        <h1 style="color:#ff0000">{{notice}}</h1>
+      {% endif %}
+      <form action = "" method="post" enctype="multipart/form-data" class="form-inline">
+          <!-- 1.表单套个form -->
+           {% csrf_token %}   <!-- 2.csrf token -->
+      <div class="row" >
+        <div class="col-md-6">
+          <button type="button" class="btn btn-success" style="font-size: 25px;" data-toggle="modal" data-target="#addModal" >新增数据</button>
+        </div>
+        <div class="col-md-6 text-right">
+              <!-- <label style="font-size: 20px">&nbsp;&nbsp;筛选</label> -->
+              <select class="form-control" name="sex">
+                  <option value="1">male</option>
+                  <option value="-1">female</option>
+                  <option value="0">unknown</option>
+              </select>
+              <select class="form-control" name="rings">
+                  <option value="5">5岁</option>
+                  <option value="6">6岁</option>
+                  <option value="7">7岁</option>
+                  <option value="8">8岁</option>
+                  <option value="9">9岁</option>
+              </select>
+              <button type="submit" class="btn btn-primary" >筛选</button>    
+          
+        </div>
+
+      </div>
+      </form>
+      
+      <div style="height:30px"></div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>性别</th>
+            <th>长度</th>
+            <th>直径</th>
+            <th>高度</th>
+            <th>总宽</th>
+            <th>剥皮宽度</th>
+            <th>内脏宽度</th>
+            <th>贝壳宽度</th>
+            <th>年龄</th>
+            <th>用户</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for t in data %}
+            <tr>
+              <td>{{t.sex}}</td>
+              <td>{{t.length}}</td>
+              <td>{{t.diameter}}</td>
+              <td>{{t.height}}</td>
+              <td>{{t.whole_weight}}</td>
+              <td>{{t.shucked_weight}}</td>
+              <td>{{t.viscera_weight}}</td>
+              <td>{{t.shell_weight}}</td>
+              <td>{{t.rings}}</td>
+              <td>{{t.username.username}}-{{t.username.name}}</td>
+                <td><button class="btn btn-danger" data-toggle="modal"
+                            onclick="updateId.value='{{t.id}}';updateSex.value='{{t.sex}}';updateLen.value='{{t.length}}';updatediameter.value='{{t.diameter}}';updateHigh.value='{{t.height}}';updateWHigh.value='{{t.whole_weight}}';updateWeight.value='{{t.shucked_weight}}';updateNWeight.value='{{t.viscera_weight}}';updateKWeight.value='{{t.shell_weight}}';updateAge.value='{{t.rings}}';" data-target="#updateModal">修改</button>             
+
+              <button class="btn btn-warning" data-toggle="modal" onclick="deleteId.value='{{t.id}}'"data-target="#deleteModal">删除</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+    <div class="col-md-3" >
+
+        <div style="height:50px"></div>
+         <div class="panel panel-danger">
+            <div class="panel-heading">
+                模型训练
+            </div>
+            <div class="panel-body">
+                <form method="post" action="" class="form-inline">
+                {% csrf_token %}
+                    <label for="selectMethod">模型：</label>
+                    <select class="form-control" name="model">
+                        <option value="lr">LR</option>
+                        <option value="svr">SVR</option>
+                        <option value="lasso">LASSO</option>
+                        <option value="ridge">Ridge</option>
+                        <option value="dt">DT-R</option>
+                        <option value="rf">RF-R</option>
+                        <option value="xgboost">XGBoost</option>
+                    </select>
+                    <button type="submit" class="btn btn-info btn-lg" name="trainBtn">重新训练</button>
+                </form>
+
+                <div style="height:50px"></div>
+                <table  class="table table-striped">
+                    <tr>
+                        <td>预测方法：</td>
+                        <td>{{modelInfo.6}}</td>
+                    </tr>
+                    <tr>
+                        <td>平均绝对误差(MAE):</td>
+                        <td>{{modelInfo.0}}</td>
+                    </tr>
+                    <tr>
+                        <td>均方误差(MSE):</td>
+                        <td>{{modelInfo.1}}</td>
+                    </tr>
+                    <tr>
+                        <td>平方根均方误差(RMSE):</td>
+                        <td>{{modelInfo.2}}</td>
+                    </tr>
+                    <tr>
+                        <td>决定系数(R-squared):</td>
+                        <td>{{modelInfo.3}}</td>
+                    </tr>
+                    <tr>
+                        <td>数据集大小：</td>
+                        <td>{{modelInfo.4}}条</td>
+                    </tr>
+                    <tr>
+                        <td>训练时间：</td>
+                        <td>{{modelInfo.5}}秒</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+</div>
+
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+    <!-- 新增模态框（Modal） -->
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">新增数据</h4>
+                </div>
+                <div class="modal-body">
+                    <h4>性别</h4>
+                    <textarea class="form-control" row="1" name="sex"></textarea>
+                    <h4>长度</h4>
+                    <textarea class="form-control" row="1" name="length"></textarea>
+                    <h4>直径</h4>
+                    <textarea class="form-control" row="1" name="diameter"></textarea>
+                    <h4>高度</h4>
+                    <textarea class="form-control" row="1" name="height"></textarea>
+                    <h4>整体高度</h4>
+                    <textarea class="form-control" row="1" name="whole_weight"></textarea>
+                    <h4>去除壳后的重量</h4>
+                    <textarea class="form-control" row="1" name="shucked_weight"></textarea>
+                    <h4>内脏的重量</h4>
+                    <textarea class="form-control" row="1" name="viscera_weight"></textarea>
+                    <h4>壳重量</h4>
+                    <textarea class="form-control" row="1" name="shell_weight"></textarea>
+                    <h4>年轮数</h4>
+                    <textarea class="form-control" row="1" name="rings"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" name="addBtn">提交更改</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</form>
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">修改鲍鱼</h4>
+                </div>
+                <div class="modal-body">
+                    <h6>编号</h6>
+                    <input type="text" class="form-control" name="updateId" id="updateId" readonly/>
+                    <h6>性别</h6>
+                    <textarea class="form-control"  name="sex" id="updateSex"></textarea>
+                    <h6>长度</h6>
+                    <textarea class="form-control"  name="length" id="updateLen"></textarea>
+                    <h6>直径</h6>
+                    <textarea class="form-control"  name="diameter" id="updatediameter"></textarea>
+                    <h6>高度</h6>
+                    <textarea class="form-control"  name="height" id="updateHigh"></textarea>
+                    <h6>整体高度</h6>
+                    <textarea class="form-control"  name="whole_weight" id="updateWHigh"></textarea>
+                    <h6>去除壳后的重量</h6>
+                    <textarea class="form-control"  name="shucked_weight" id="updateWeight"></textarea>
+                    <h6>内脏的重量</h6>
+                    <textarea class="form-control"  name="viscera_weight" id="updateNWeight"></textarea>
+                    <h6>壳重量</h6>
+                    <textarea class="form-control"  name="shell_weight" id="updateKWeight"></textarea>
+                    <h6>年轮数</h6>
+                    <textarea class="form-control"  name="rings" id="updateAge"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary" name="updateBtn">提交更改</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</form>
+<form action="" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+    <!-- 删除模态框（Modal） -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">删除鲍鱼</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>确认删除？</h3>
+                    <input type="text" class="form-control"  style="display:none"
+                    name="deleteId" id="deleteId"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary" name="deleteBtn">删除</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+</form>
+
+{% endblock %}
