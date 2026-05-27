@@ -1,0 +1,159 @@
+.footer {
+    background-color: #7a1a18;
+    color: #f7e6d0;
+    padding: 60px 100px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.logo-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo-text {
+    display: flex;
+    font-size: 40px;
+    flex-direction: column;
+}
+
+.logo-en p {
+    font-family: "Montserrat", "Roboto", "Helvetica Neue", sans-serif;
+    margin: 0;
+    font-size: 25px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.footer-right {
+    display: flex;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 120px;
+}
+
+.footer-links {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    flex-direction: column; 
+}
+
+.footer-column h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 0;
+    color: #fbead0;
+}
+
+.footer-column a {
+    color: #fbead0;
+    text-decoration: none;
+    font-size: 14px;
+    transition: opacity 0.3s;
+}
+
+.footer-column a:hover {
+    opacity: 0.7;
+}
+
+.footer-bottom {
+    margin-top: 60px;
+    text-align: left;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 35px;
+    color: #fbead0;
+}
+
+/* 中屏：992px 以下 */
+@media (max-width: 992px) {
+    .footer {
+        padding: 40px 50px 30px;
+    }
+    .footer-right {
+        gap: 40px;
+    }
+    .logo-text {
+        font-size: 32px;
+    }
+    .logo-en p {
+        font-size: 20px;
+    }
+    .footer-bottom {
+        font-size: 24px;
+        letter-spacing: 25px;
+    }
+}
+
+/* 小屏幕手风琴折叠 */
+@media (max-width: 768px) {
+    .footer-links {
+        display: none; /* 默认折叠 */
+    }
+    .footer-column.active .footer-links {
+        display: flex;
+        flex-direction: column;
+    }
+    .footer-toggle {
+        cursor: pointer;
+        position: relative;
+    }
+    .footer-toggle::after {
+        content: "+";
+        position: absolute;
+        right: 0;
+        font-size: 18px;
+        transition: transform 0.3s;
+    }
+    .footer-column.active .footer-toggle::after {
+        content: "−"; /* 展开时显示减号 */
+    }
+}
+
+/* 超小屏：480px 以下 */
+@media (max-width: 480px) {
+    .footer {
+        padding: 30px 20px 20px;
+    }
+    .logo-text {
+        font-size: 28px;
+    }
+    .logo-en p {
+        font-size: 18px;
+    }
+    .footer-column h3 {
+        font-size: 16px;
+    }
+    .footer-column a {
+        font-size: 12px;
+    }
+    .footer-bottom {
+        font-size: 18px;
+        letter-spacing: 10px;
+    }
+}

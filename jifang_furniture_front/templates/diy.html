@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>JIFANG - DIY</title>
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/footer.css">
+    <link rel="stylesheet" href="../static/css/diy.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="navbar">
+        <!-- LOGO+Brand -->
+        <div class="navbar-left">
+            <img src="../static/images/logo.png" alt="几方Logo" class="logo" />
+            <h1 class="brand">JIFANG</h1>
+        </div>
+
+        <button class="menu-toggle" aria-label="Toggle menu">
+            <!-- 汉堡图标 -->
+            <svg class="icon-bars" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7a1a18"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+
+            <!-- X 图标 -->
+            <svg class="icon-times" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7a1a18"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+
+        <div class="navbar-group">
+            <!-- Link -->
+            <nav class="navbar-center">
+                <a href="#">PRODUCT</a>
+                <a href="#">DESIGNER</a>
+                <a href="#">NEWS</a>
+                <a href="#">ABOUT</a>
+                <a href="#">CONTACT</a>
+                <a href="#">DOWNLOAD</a>
+            </nav>
+            <!-- 按钮 -->
+            <div class="navbar-right">
+                <svg width="20" height="20" fill="currentColor">
+                    <use xlink:href="../static/images/globe-solid-full.svg"></use>
+                </svg>
+                <span>语言</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="main-wrapper">
+            <!-- 左侧：3D预览区 -->
+            <div class="canvas-section">
+                <div id="canvas-box">
+                    <script type="importmap">
+                        {
+                            "imports": {
+                                "three": "../static/js/three.js-r160/build/three.module.js",
+                                "three/addons/": "../static/js/three.js-r160/examples/jsm/"
+                            }
+                        }
+                    </script>
+                    <script type="module" src="/static/js/diy.js"></script>
+                </div>
+            </div>
+
+            <!-- 右侧：配置面板 -->
+            <div class="config-section">
+                <h2 class="config-title">你的定制</h2>
+
+                <!-- 木材种类 -->
+                <div class="config-group">
+                    <div class="config-label">木材种类</div>
+                    <div class="wood-options">
+                        <div class="wood-option active" data-wood="white-ash" style="background-color: #f9f3e8;"
+                            onclick="selectWood(this)">
+                            <div class="wood-option-label">白蜡木</div>
+                        </div>
+                        <div class="wood-option" data-wood="walnut" style="background-color: #876755;"
+                            onclick="selectWood(this)">
+                            <div class="wood-option-label">黑胡桃木</div>
+                        </div>
+                        <div class="wood-option" data-wood="cherry" style="background-color: #e4c29b;"
+                            onclick="selectWood(this)">
+                            <div class="wood-option-label">樱桃木</div>
+                        </div>
+                        <div class="wood-option" data-wood="oak" style="background-color: #f4e7d1;"
+                            onclick="selectWood(this)">
+                            <div class="wood-option-label">法国白橡木</div>
+                        </div>
+                        <!-- <div class="wood-option active" data-wood="cedar" style="background-color: #6b5d3f;"
+                            onclick="selectWood(this)">
+                            <div class="wood-option-label">红杉木</div>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- 桌面形状 -->
+                <div class="config-group">
+                    <div class="config-label">桌面</div>
+                    <div class="shape-options">
+                        <!-- 长桌 -->
+                        <div class="shape-option active" data-shape="Long" onclick="selectShape(this)">
+                            <svg viewBox="0 0 80 60" fill="#8b2332" stroke="none">
+                                <rect x="10" y="10" width="60" height="40" rx="4" />
+                            </svg>
+                        </div>
+                        <!-- 方桌 -->
+                        <div class="shape-option" data-shape="Square" onclick="selectShape(this)">
+                            <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
+                                <rect x="20" y="10" width="40" height="40" rx="4" />
+                            </svg>
+                        </div>
+                        <!-- 圆桌 -->
+                        <div class="shape-option" data-shape="Cricle" onclick="selectShape(this)">
+                            <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
+                                <circle cx="40" cy="30" r="20" />
+                            </svg>
+                        </div>
+                        <!-- <div class="shape-option" data-shape="ellipse" onclick="selectShape(this)">
+                            <svg viewBox="0 0 80 60" fill="none" stroke="#333" stroke-width="2">
+                                <ellipse cx="40" cy="30" rx="30" ry="20" />
+                            </svg>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- 尺寸控制 -->
+                <div class="config-group">
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>长度</span>
+                            <span class="slider-value"><span id="len-display">160</span>
+                                cm</span>
+                        </div>
+                        <input id="len" type="range" min="100" max="240" step="20" value="160"
+                            oninput="updateSlider('len')">
+                    </div>
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>宽度</span>
+                            <span class="slider-value"><span id="wid-display">120</span>
+                                cm</span>
+                        </div>
+                        <input id="wid" type="range" min="60" max="180" step="20" value="120"
+                            oninput="updateSlider('wid')">
+                    </div>
+                    <div class="slider-control">
+                        <div class="slider-label">
+                            <span>厚度</span>
+                            <span class="slider-value"><span id="thickness-display">5</span>
+                                cm</span>
+                        </div>
+                        <input id="thickness" type="range" min="2" max="6" step="1" value="4"
+                            oninput="updateSlider('thickness')">
+                    </div>
+                </div>
+
+                <!-- 桌腿选择 -->
+                <div class="config-group">
+                    <div class="config-label">桌腿</div>
+                    <div class="leg-options">
+                        <div class="leg-option active" data-leg="1" onclick="selectLeg(this)">
+                            <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
+                                <!-- 左腿 -->
+                                <!-- 上椭圆 -->
+                                <ellipse cx="20" cy="10" rx="5" ry="2" />
+                                <!-- 下椭圆 -->
+                                <ellipse cx="20" cy="70" rx="5" ry="2" />
+                                <!-- 圆柱侧边 -->
+                                <line x1="15" y1="10" x2="15" y2="70" />
+                                <line x1="25" y1="10" x2="25" y2="70" />
+
+                                <!-- 右腿 -->
+                                <ellipse cx="40" cy="10" rx="5" ry="2" />
+                                <ellipse cx="40" cy="70" rx="5" ry="2" />
+                                <line x1="35" y1="10" x2="35" y2="70" />
+                                <line x1="45" y1="10" x2="45" y2="70" />
+                            </svg>
+                        </div>
+                        <!-- <div class="leg-option" data-leg="Square" onclick="selectLeg(this)">
+                            <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
+                                <rect x="18" y="10" width="4" height="65" />
+                                <rect x="38" y="10" width="4" height="65" />
+                                <line x1="15" y1="75" x2="25" y2="75" stroke-width="3" />
+                                <line x1="35" y1="75" x2="45" y2="75" stroke-width="3" />
+                            </svg>
+                        </div>
+                        <div class="leg-option" data-leg="Cricle" onclick="selectLeg(this)">
+                            <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
+                                <path d="M30,10 L10,70 M30,10 L50,70" />
+                                <path d="M10,70 L50,70 M50,70 L30,10 M10,70 L30,10" />
+                            </svg>
+                        </div> -->
+                        <!-- <div class="leg-option" data-leg="type4" onclick="selectLeg(this)">
+                            <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
+                                <path d="M15,10 L45,10 M15,10 L10,70 M45,10 L50,70" />
+                                <path d="M10,70 L15,70 M50,70 L45,70" />
+                            </svg>
+                        </div>
+                        <div class="leg-option" data-leg="type5" onclick="selectLeg(this)">
+                            <svg viewBox="0 0 60 80" fill="none" stroke="#333" stroke-width="2">
+                                <line x1="15" y1="10" x2="15" y2="70" />
+                                <line x1="25" y1="10" x2="25" y2="70" />
+                                <line x1="35" y1="10" x2="35" y2="70" />
+                                <line x1="45" y1="10" x2="45" y2="70" />
+                            </svg>
+                        </div> -->
+                    </div>
+                </div>
+
+                <!-- 价格显示 -->
+                <div class="config-group">
+                    <div class="config-label">价格</div>
+                    <div class="price-info">¥ 2,599.00</div>
+                </div>
+
+                <!-- 提示文字 -->
+                <div class="config-note">
+                    若您需要咨询这款产品的购买事宜，请导出 pdf 并通过联系页面的信息与我们的销售代表或经销商取得联系。
+                </div>
+
+                <!-- PDF导出按钮 -->
+                <button class="btn-pdf-full" onclick="generatePDF()">你的定制.PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下方内容区 -->
+    <div class="content-sections">
+        <!-- 为什么选择原木桌 -->
+        <div class="content-section">
+            <div class="content-image">
+                <div class="content-image-placeholder">图片占位：木工伐木场景</div>
+            </div>
+            <div class="content-text">
+                <h2>为什么选择原木桌？</h2>
+                <p>作为一家木材进口商，从成立之初就一直在为国内热爱木材的个人用户优选形态各异的原木切片。这项业务被称"几方选木"，入们会将这些更贴近自然形态的木片用作桌面或家装等。与成品家具不同，原木切片更像是由大自然完成的设计，每一块切片从形态和纹理都是独一无二的。就像每个人都独一无二一样。
+                </p>
+            </div>
+        </div>
+
+        <!-- 我们的原木好在哪 -->
+        <div class="content-section reverse">
+            <div class="content-image">
+                <div class="content-image-placeholder">图片占位：家具场景展示</div>
+            </div>
+            <div class="content-text">
+                <h2>我们的原木好在哪？</h2>
+                <p>作为一家木材进口商，从成立之初就一直在为国内热爱木材的个人用户优选形态各异的原木切片。这项业务被称"几方选木"，入们会将这些更贴近自然形态的木片用作桌面或家装等。与成品家具不同，原木切片更像是由大自然完成的设计，每一块切片从形态和纹理都是独一无二的。就像每个人都独一无二一样。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-left">
+                <div class="logo-group">
+                    <div class="logo-text">
+                        <span class="logo-cn">几</span>
+                        <span class="logo-cn">方</span>
+                    </div>
+                    <div class="logo-en">
+                        <p>JI</p>
+                        <p>FANG</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-right">
+                <div class="footer-column">
+                    <h3 class="footer-toggle">产品</h3>
+                    <div class="footer-links">
+                        <a href="#">成品家具</a>
+                        <a href="#">DIY原木桌</a>
+                        <a href="#">几方选木</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3 class="footer-toggle">关于</h3>
+                    <div class="footer-links">
+                        <a href="#">几方来信</a>
+                        <a href="#">售后服务</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3 class="footer-toggle">关注</h3>
+                    <div class="footer-links">
+                        <a href="#">Instgram</a>
+                        <a href="#">Youtube</a>
+                        <a href="#">小红书</a>
+                        <a href="#">微信</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3 class="footer-toggle">设计师</h3>
+                    <div class="footer-links">
+                        <h3>新闻</h3>
+                        <h3>下载</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>随木而安,</p>
+        </div>
+    </footer>
+
+    <!-- 外部脚本 -->
+    <script src="../static/js/header.js"></script>
+    <script src="../static/js/footer.js"></script>
+    <script src="../static/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/diy2.js"></script>
+</body>
+
+</html>

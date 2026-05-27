@@ -1,0 +1,162 @@
+body {
+    font-family: 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #666;
+    background-color: #fff;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 180px;
+    height: 100vh;
+    padding: 0px 0 0 40px;
+    margin: 150px 0 ;
+}
+
+.sidebar-title {
+    font-size: 14px;
+    color: #333;
+    /* 标题文字颜色 */
+    margin-bottom: 20px;
+    font-weight: normal;
+
+    text-decoration: none;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+/* 小横杠的样式 */
+.sidebar-title-divider {
+    content: "";
+    width: 10px;
+    /* 调整横杠长度 */
+    height: 1px;
+    background-color: #333;
+    /* 使用和文字相同的颜色 */
+    margin-left: 70px;
+    /* 调整文字和横杠的间距 */
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+
+}
+
+.nav-menu li {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #999;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.nav-menu li a {
+    color: #999;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-menu li:hover a,
+.nav-menu li a:hover {
+    color: #333;
+}
+
+.nav-menu li.active a {
+    color: #333;
+    font-weight: 500;
+}
+
+.nav-divider {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 20px 0;
+    width: 160px;
+}
+
+.main-content {
+    margin-left: 180px;
+    padding: 80px 100px;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.main-title {
+    font-size: 48px;
+    color: #8B4513;
+    font-weight: normal;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.main-title-en {
+    font-size: 24px;
+    color: #8B4513;
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 60px;
+}
+
+.intro-text {
+    font-size: 14px;
+    line-height: 2;
+    color: #666;
+    max-width: 800px;
+    margin: 0 auto 100px;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quote-text {
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.product-image {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 120px;
+    display: block;
+}
+
+.wood-section {
+    margin-bottom: 100px;
+}
+
+.wood-title {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.wood-title-en {
+    font-size: 14px;
+    color: #999;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 40px;
+}
+
+.wood-description {
+    font-size: 14px;
+    line-height: 2;
+    color: #666;
+    margin-bottom: 60px;
+}
+
+.grain-section {
+    margin-top: 100px;
+}
