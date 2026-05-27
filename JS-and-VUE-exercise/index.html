@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机名言薄</title>
+    <style>
+        .container {
+
+            margin: auto;
+            padding: 150px 0;
+
+            background-color: gray;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .title {
+            font-size: 50px;
+            text-align: center;
+        }
+
+        .window {
+            width: 500px;
+            height: 200px;
+            background-color: skyblue;
+            border-radius: 25px;
+
+            border: solid;
+            margin: auto;
+            padding: 10px;
+
+            /* position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0; */
+        }
+
+        .quotation {
+            font-size: 25px;
+            font-weight: 500;
+            text-align: center;
+            margin: 16% 0;
+            /* padding: 50px 0; */
+        }
+
+        .update-button {
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p class="title">随机名言薄</p>
+        <div class="window" id="quotation-window">
+            <p class="quotation" id="quotation-content">我一定会回来的!</p>
+        </div>
+        <button class="update-button" onclick="newText()">再来一句</button>
+    </div>
+
+
+    <script>
+        const myFrame = document.getElementById("quotation-window");
+        const myText = document.getElementById('quotation-content');
+
+
+        function newText() {
+            const quotations = ["阿瓦达啃大瓜！", "阿里嘎多美羊羊桑~", "祝我破鼎!"];
+            let randomNumber = Math.floor(Math.random() * 10 % quotations.length);
+            // alert(`名言要换咯！ 第${randomNumber + 1}句`);
+
+
+            myText.innerText = quotations[randomNumber];
+
+        };
+
+        if (myFrame) {
+            myFrame.addEventListener('click', newText);
+        }
+    </script>
+</body>
+
+
+</html>
